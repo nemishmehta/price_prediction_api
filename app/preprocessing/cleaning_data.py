@@ -1,4 +1,5 @@
 import pandas as pd
+import pickle
 
 
 def preprocess(data):
@@ -35,35 +36,30 @@ def preprocess(data):
             data["data"]["Kitchen type"] = val
 
     # Convert Furnished to binary
-    if data["data"]["Furnished"]:
-        data["data"]["Furnished"] = 1
-    else:
-        data["data"]["Furnished"] = 0
+    data["data"]["Furnished"] = convert_to_binary(data, "Furnished")
+
+    # Convert Terrace to binary
+    data["data"]["Terrace"] = convert_to_binary(data, "Terrace")
+
+    # Convert Garden to binary
+    data["data"]["Garden"] = convert_to_binary(data, "Garden")
 
     # Convert data to a dataframe to one hot encode variables
     # Add columns present in model columns but not data dataframe
-    df = pd.DataFrame(data, index=[0])
+    df = pd.DataFrame(data['data'], index=[0])
 
-    # Property type
+    # One Hot Encoding of categorial variables like property type, property sub-type, City
+    df = pd.get_dummies(df)
 
-    # Property sub-type
+    model_columns = pickle.load(open('model/model_columns.pkl', 'rb'))
 
-    # City
+    df = df.reindex(columns=model_columns, fill_value=0)
+
+    return df
 
 
-"""
-        {
-            "data": {
-                "Building condition": "As new" | "Just renovated" | "Good" | "To be done up" | "To renovate" | "To restore",
-                "Kitchen type": "USA uninstalled" | "Not installed" | "Installed" | "USA installed" | "Semi equipped" | "USA semi equipped" | "Hyper equipped" | "USA hyper equipped",
-                "Furnished": bool,
-                "Number of frontages": int,
-                "Surface of the plot": float
-                "Living area": float,
-                "Property type": "APARTMENT" | "HOUSE",
-                "Property sub-type": "BUNGALOW" | "CASTLE" | "CHALET" | "COUNTRY_COTTAGE" | "DUPLEX" | "EXCEPTIONAL_PROPERTY" | "FARMHOUSE" | "FLAT_STUDIO" | "GROUND_FLOOR" | "KOT" | "LOFT" | "MANOR_HOUSE" | "MANSION" | "MIXED_USE_BUILDING" | "PENTHOUSE" | "SERVICE_FLAT" | "TOWN_HOUSE" | "TRIPLEX" | "VILLA"
-                "City": str,
-                "Terrace": bool,
-                "Garden": bool
-            }
-        }"""
+def convert_to_binary(data, category):
+    if data["data"][category] == "True":
+        return 1
+    else:
+        return 0

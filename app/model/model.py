@@ -1,5 +1,5 @@
 import pandas as pd
-import joblib
+import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import make_pipeline
@@ -12,7 +12,15 @@ def model():
     """
 
     df = pd.read_csv('data/clean_data.csv')
+
+    # Drop Immoweb ID
     df = df.drop(columns='Immoweb ID')
+
+    # Rename Terrace_Combined and garden_label columns
+    df = df.rename(columns={
+        "Terrace_Combined": "Terrace",
+        "garden_label": "Garden"
+    })
 
     # Drop Post code, Price and Bedrooms columns
     X = df.drop(df.filter(regex='Post code').columns, axis=1)
@@ -30,11 +38,11 @@ def model():
     polyreg.fit(X_train, y_train)
 
     # Create a model pickle file
-    joblib.dump(polyreg, 'model.pkl')
+    pickle.dump(polyreg, open('model.pkl', 'wb'))
 
     # Create model columns pickle file
     model_columns = list(X_train.columns)
-    joblib.dump(model_columns, 'model_columns.pkl')
+    pickle.dump(model_columns, open('model_columns.pkl', 'wb'))
 
 
 if __name__ == '__main__':
