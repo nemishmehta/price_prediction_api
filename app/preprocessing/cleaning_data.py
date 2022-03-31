@@ -6,6 +6,22 @@ def preprocess(data):
     """
     Clean data to be suitable for model requirements
     """
+    # Change input data keys in the format available in dataframe
+    keys = {
+        "building_state": "Building condition",
+        "equipped_kitchen": "Kitchen type",
+        "furnished": "Furnished",
+        "facades_number": "Number of frontages",
+        "land_area": "Surface of the plot",
+        "area": "Living area",
+        "property_type": "Property type",
+        "property_sub_type": "Property sub-type",
+        "city": "City",
+        "terrace": "Terrace",
+        "garden": "Garden"
+    }
+    new_dict = {keys[key]: value for key, value in data['data'].items()}
+    data['data'] = new_dict
 
     # Transform building condition to ordinal values
     build_cond_map = {
@@ -59,7 +75,7 @@ def preprocess(data):
 
 
 def convert_to_binary(data, category):
-    if data["data"][category] == "True":
+    if data["data"][category]:
         return 1
     else:
         return 0
