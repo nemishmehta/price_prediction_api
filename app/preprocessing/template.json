@@ -1,0 +1,54 @@
+{
+    "data": {
+        "building-state": [
+            "As new",
+            "Just renovated",
+            "Good",
+            "To be done up",
+            "To renovate",
+            "To restore"
+        ],
+        "equipped-kitchen": [
+            "USA uninstalled",
+            "Not installed",
+            "Installed",
+            "USA installed",
+            "Semi equipped",
+            "USA semi equipped",
+            "Hyper equipped",
+            "USA hyper equipped"
+        ],
+        "furnished": "[bool]",
+        "facades-number": "[int]",
+        "land-area": "[float]",
+        "area": "[float]",
+        "property-type": [
+            "APARTMENT",
+            "HOUSE"
+        ],
+        "property-sub-type": [
+            "BUNGALOW",
+            "CASTLE",
+            "CHALET",
+            "COUNTRY_COTTAGE",
+            "DUPLEX",
+            "EXCEPTIONAL_PROPERTY",
+            "FARMHOUSE",
+            "FLAT_STUDIO",
+            "GROUND_FLOOR",
+            "KOT",
+            "LOFT",
+            "MANOR_HOUSE",
+            "MANSION",
+            "MIXED_USE_BUILDING",
+            "PENTHOUSE",
+            "SERVICE_FLAT",
+            "TOWN_HOUSE",
+            "TRIPLEX",
+            "VILLA"
+        ],
+        "city": "Enter a city in Flanders or Brussels",
+        "terrace": "[bool]",
+        "garden": "[bool]"
+    }
+}

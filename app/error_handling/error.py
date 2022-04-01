@@ -70,7 +70,7 @@ def error_handler(json_data):
             return v
 
     try:
-        Error(**json_data['data'])
+        Error(**json_data)
         return "No errors"
     except ValidationError as e:
         capture_error = {}

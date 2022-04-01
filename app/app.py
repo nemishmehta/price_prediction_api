@@ -16,65 +16,36 @@ def start():
 @app.route('/predict', methods=['GET', 'POST'])
 def price_predict():
     if request.method == 'GET':
-        output_template = {
-            "data": {
-                "building-state": [
-                    "As new", "Just renovated", "Good", "To be done up",
-                    "To renovate", "To restore"
-                ],
-                "equipped-kitchen": [
-                    "USA uninstalled", "Not installed", "Installed",
-                    "USA installed", "Semi equipped", "USA semi equipped",
-                    "Hyper equipped", "USA hyper equipped"
-                ],
-                "furnished":
-                "[bool]",
-                "facades-number":
-                "[int]",
-                "land-area":
-                "[float]",
-                "area":
-                "[float]",
-                "property-type": ["APARTMENT", "HOUSE"],
-                "property-sub-type": [
-                    "BUNGALOW", "CASTLE", "CHALET", "COUNTRY_COTTAGE",
-                    "DUPLEX", "EXCEPTIONAL_PROPERTY", "FARMHOUSE",
-                    "FLAT_STUDIO", "GROUND_FLOOR", "KOT", "LOFT",
-                    "MANOR_HOUSE", "MANSION", "MIXED_USE_BUILDING",
-                    "PENTHOUSE", "SERVICE_FLAT", "TOWN_HOUSE", "TRIPLEX",
-                    "VILLA"
-                ],
-                "city":
-                "Enter a city in Flanders or Brussels",
-                "terrace":
-                "[bool]",
-                "garden":
-                "[bool]"
-            }
-        }
+
+        with open("preprocessing/template.json") as file:
+            output_template = json.load(file)
 
         # Beautify output using Flask templates
-        return jsonify(output_template)
+        return jsonify(output_template), 200
 
     if request.method == 'POST':
-        json = request.get_json(
-        )  # This will result in a 400 error when input data is not in JSON format
+
+        if not isinstance(request.data, dict):
+            return 'Refer input format available at: http://immo-price-predictor.herokuapp.com/predict', 400
+
+        json_data = request.get_json().get('data')
+        if not json_data:
+            return 'Refer input format available at: http://immo-price-predictor.herokuapp.com/predict', 400
 
         # Test if input provided is as requested. If not, send error message
-        error_check = error_handler(json)
+        error_check = error_handler(json_data)
 
         if error_check == "No errors":
             # If input provided as expected, pass it through for pre-processing
-            prepped_df = preprocess(json)
+            prepped_df = preprocess(json_data)
 
             # Use pre-processed data as an input for model and return the output in JSON
             price = prediction(prepped_df)
-            return jsonify({"prediction": price, "error": None})
+            return jsonify({"prediction": price, "error": None}), 200
         else:
-            return jsonify({"errors": error_check, "prediction": None})
+            return jsonify({"errors": error_check, "prediction": None}), 400
 
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host="0.0.0.0", threaded=True, port=port)
-    #app.run()

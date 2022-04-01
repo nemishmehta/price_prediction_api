@@ -20,8 +20,8 @@ def preprocess(data):
         "terrace": "Terrace",
         "garden": "Garden"
     }
-    new_dict = {keys[key]: value for key, value in data['data'].items()}
-    data['data'] = new_dict
+    new_dict = {keys[key]: value for key, value in data.items()}
+    data = new_dict
 
     # Transform building condition to ordinal values
     build_cond_map = {
@@ -33,8 +33,8 @@ def preprocess(data):
         'To restore': 1
     }
     for cond, val in build_cond_map.items():
-        if data["data"]["Building condition"] == cond:
-            data["data"]["Building condition"] = val
+        if data["Building condition"] == cond:
+            data["Building condition"] = val
 
     # Transform Kitchen type to ordinal values
     kit_type_map = {
@@ -48,17 +48,17 @@ def preprocess(data):
         "USA hyper equipped": 2
     }
     for cond, val in kit_type_map.items():
-        if data["data"]["Kitchen type"] == cond:
-            data["data"]["Kitchen type"] = val
+        if data["Kitchen type"] == cond:
+            data["Kitchen type"] = val
 
     # Convert Furnished to binary
-    data["data"]["Furnished"] = convert_to_binary(data, "Furnished")
+    data["Furnished"] = convert_to_binary(data, "Furnished")
 
     # Convert Terrace to binary
-    data["data"]["Terrace"] = convert_to_binary(data, "Terrace")
+    data["Terrace"] = convert_to_binary(data, "Terrace")
 
     # Convert Garden to binary
-    data["data"]["Garden"] = convert_to_binary(data, "Garden")
+    data["Garden"] = convert_to_binary(data, "Garden")
 
     # Convert data to a dataframe to one hot encode variables
     # Add columns present in model columns but not data dataframe
@@ -75,7 +75,7 @@ def preprocess(data):
 
 
 def convert_to_binary(data, category):
-    if data["data"][category]:
+    if data[category]:
         return 1
     else:
         return 0
