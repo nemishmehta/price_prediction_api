@@ -8,14 +8,14 @@ def preprocess(data):
     """
     # Change input data keys in the format available in dataframe
     keys = {
-        "building_state": "Building condition",
-        "equipped_kitchen": "Kitchen type",
+        "building-state": "Building condition",
+        "equipped-kitchen": "Kitchen type",
         "furnished": "Furnished",
-        "facades_number": "Number of frontages",
-        "land_area": "Surface of the plot",
+        "facades-number": "Number of frontages",
+        "land-area": "Surface of the plot",
         "area": "Living area",
-        "property_type": "Property type",
-        "property_sub_type": "Property sub-type",
+        "property-type": "Property type",
+        "property-sub-type": "Property sub-type",
         "city": "City",
         "terrace": "Terrace",
         "garden": "Garden"

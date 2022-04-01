@@ -1,5 +1,5 @@
-import json
-from pydantic import BaseModel, ValidationError, validator
+from pydantic import BaseModel, Field, PositiveInt, ValidationError, validator
+from typing import Literal
 
 
 def error_handler(json_data):
@@ -15,85 +15,42 @@ def error_handler(json_data):
 
     # Check if input data is in the required format
     class Error(BaseModel):
-        building_state: str
-        equipped_kitchen: str
+        building_state: Literal["As new", "Just renovated", "Good",
+                                "To be done up", "To renovate",
+                                "To restore"] = Field(...,
+                                                      alias="building-state")
+        equipped_kitchen: Literal["USA uninstalled", "Not installed",
+                                  "Installed", "USA installed",
+                                  "Semi equipped", "USA semi equipped",
+                                  "Hyper equipped",
+                                  "USA hyper equipped"] = Field(
+                                      ..., alias="equipped-kitchen")
         furnished: bool
-        facades_number: int
-        land_area: float
-        area: float
-        property_type: str
-        property_sub_type: str
+        facades_number: int = Field(..., alias="facades-number")
+        land_area: PositiveInt = Field(..., alias="land-area")
+        area: PositiveInt
+        property_type: Literal["APARTMENT",
+                               "HOUSE"] = Field(..., alias="property-type")
+        property_sub_type: Literal["BUNGALOW", "CASTLE", "CHALET",
+                                   "COUNTRY_COTTAGE", "DUPLEX",
+                                   "EXCEPTIONAL_PROPERTY", "FARMHOUSE",
+                                   "FLAT_STUDIO", "GROUND_FLOOR", "KOT",
+                                   "LOFT", "MANOR_HOUSE", "MANSION",
+                                   "MIXED_USE_BUILDING", "PENTHOUSE",
+                                   "SERVICE_FLAT", "TOWN_HOUSE", "TRIPLEX",
+                                   "VILLA"] = Field(...,
+                                                    alias="property-sub-type")
         city: str
         terrace: bool
         garden: bool
 
-        @validator('building_state')
-        def build_state(cls, v):
-            build_options = [
-                "As new", "Just renovated", "Good", "To be done up",
-                "To renovate", "To restore"
-            ]
-            if v not in build_options:
-                raise ValueError(
-                    f'Choose one of these options for building_state: {build_options}'
-                )
-            return v
-
-        @validator('equipped_kitchen')
-        def kitchen(cls, v):
-            kitchen_options = [
-                "USA uninstalled", "Not installed", "Installed",
-                "USA installed", "Semi equipped", "USA semi equipped",
-                "Hyper equipped", "USA hyper equipped"
-            ]
-            if v not in kitchen_options:
-                raise ValueError(
-                    f'Choose one of these options for equipped_kitchen: {kitchen_options}'
-                )
-            return v
-
-        @validator('facades_number')
+        @validator('facades_number', allow_reuse=True)
         def facades(cls, v):
             if v <= 0 or v > 4:
-                raise ValueError('Please choose between 1 and 4 facades.')
-
-        @validator('land_area')
-        def plot_area(cls, v):
-            if v <= 0:
-                raise ValueError('Please choose a plot area greater than 0.')
-            return v
-
-        @validator('area')
-        def living_area(cls, v):
-            if v <= 0:
-                raise ValueError('Please choose a living area greater than 0.')
-            return v
-
-        @validator('property_type')
-        def prop_type(cls, v):
-            prop_options = ["APARTMENT", "HOUSE"]
-            if v not in prop_options:
                 raise ValueError(
-                    f'Choose one of these options for property_type: {prop_options}.'
-                )
-            return v
+                    'unexpected value; permitted: between 1 and 4')
 
-        @validator('property_sub_type')
-        def prop_sub_type(cls, v):
-            prop_sub_options = [
-                "BUNGALOW", "CASTLE", "CHALET", "COUNTRY_COTTAGE", "DUPLEX",
-                "EXCEPTIONAL_PROPERTY", "FARMHOUSE", "FLAT_STUDIO",
-                "GROUND_FLOOR", "KOT", "LOFT", "MANOR_HOUSE", "MANSION",
-                "MIXED_USE_BUILDING", "PENTHOUSE", "SERVICE_FLAT",
-                "TOWN_HOUSE", "TRIPLEX", "VILLA"
-            ]
-            if v not in prop_sub_options:
-                raise ValueError(
-                    f'Choose one of these options for property_type: {prop_sub_options}.'
-                )
-            return v
-
-        @validator('city')
+        @validator('city', allow_reuse=True)
         def city_select(cls, v):
             city_options = [
                 'Aalst', 'Antwerpen', 'Arlon',
@@ -109,11 +66,15 @@ def error_handler(json_data):
             ]
             if v not in city_options:
                 raise ValueError(
-                    f'Choose one of these options for city: {city_options}.')
+                    f'unexpected value; permitted: {city_options}')
             return v
 
     try:
         Error(**json_data['data'])
         return "No errors"
     except ValidationError as e:
-        return e
+        capture_error = {}
+        for item in e.errors():
+            capture_error[item["loc"][0]] = item["msg"]
+
+        return capture_error

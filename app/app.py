@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, jsonify, request
 import json
 import os
 from error_handling.error import error_handler
@@ -16,24 +16,45 @@ def start():
 @app.route('/predict', methods=['GET', 'POST'])
 def price_predict():
     if request.method == 'GET':
-        output_template = """
-        {
+        output_template = {
             "data": {
-                "building_state": "As new" | "Just renovated" | "Good" | "To be done up" | "To renovate" | "To restore",
-                "equipped_kitchen": "USA uninstalled" | "Not installed" | "Installed" | "USA installed" | "Semi equipped" | "USA semi equipped" | "Hyper equipped" | "USA hyper equipped",
-                "furnished": bool,
-                "facades_number": int,
-                "land_area": float,
-                "area": float,
-                "property_type": "APARTMENT" | "HOUSE",
-                "property_sub_type": "BUNGALOW" | "CASTLE" | "CHALET" | "COUNTRY_COTTAGE" | "DUPLEX" | "EXCEPTIONAL_PROPERTY" | "FARMHOUSE" | "FLAT_STUDIO" | "GROUND_FLOOR" | "KOT" | "LOFT" | "MANOR_HOUSE" | "MANSION" | "MIXED_USE_BUILDING" | "PENTHOUSE" | "SERVICE_FLAT" | "TOWN_HOUSE" | "TRIPLEX" | "VILLA",
-                "city": str,
-                "terrace": bool,
-                "garden": bool
+                "building-state": [
+                    "As new", "Just renovated", "Good", "To be done up",
+                    "To renovate", "To restore"
+                ],
+                "equipped-kitchen": [
+                    "USA uninstalled", "Not installed", "Installed",
+                    "USA installed", "Semi equipped", "USA semi equipped",
+                    "Hyper equipped", "USA hyper equipped"
+                ],
+                "furnished":
+                "[bool]",
+                "facades-number":
+                "[int]",
+                "land-area":
+                "[float]",
+                "area":
+                "[float]",
+                "property-type": ["APARTMENT", "HOUSE"],
+                "property-sub-type": [
+                    "BUNGALOW", "CASTLE", "CHALET", "COUNTRY_COTTAGE",
+                    "DUPLEX", "EXCEPTIONAL_PROPERTY", "FARMHOUSE",
+                    "FLAT_STUDIO", "GROUND_FLOOR", "KOT", "LOFT",
+                    "MANOR_HOUSE", "MANSION", "MIXED_USE_BUILDING",
+                    "PENTHOUSE", "SERVICE_FLAT", "TOWN_HOUSE", "TRIPLEX",
+                    "VILLA"
+                ],
+                "city":
+                "Enter a city in Flanders or Brussels",
+                "terrace":
+                "[bool]",
+                "garden":
+                "[bool]"
             }
-        }"""
+        }
+
         # Beautify output using Flask templates
-        return f'The POST method requires a JSON input in the following format: \n {output_template}'
+        return jsonify(output_template)
 
     if request.method == 'POST':
         json = request.get_json(
@@ -48,12 +69,12 @@ def price_predict():
 
             # Use pre-processed data as an input for model and return the output in JSON
             price = prediction(prepped_df)
-            return {"prediction": price}
+            return jsonify({"prediction": price, "error": None})
         else:
-            return {"errors": error_check}
+            return jsonify({"errors": error_check, "prediction": None})
 
 
 if __name__ == '__main__':
-    #port = int(os.environ.get('PORT', 5000))
-    #app.run(host="0.0.0.0", threaded=True, port=port)
-    app.run()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host="0.0.0.0", threaded=True, port=port)
+    #app.run()
