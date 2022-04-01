@@ -62,7 +62,7 @@ def preprocess(data):
 
     # Convert data to a dataframe to one hot encode variables
     # Add columns present in model columns but not data dataframe
-    df = pd.DataFrame(data['data'], index=[0])
+    df = pd.DataFrame(data, index=[0])
 
     # One Hot Encoding of categorial variables like property type, property sub-type, City
     df = pd.get_dummies(df)

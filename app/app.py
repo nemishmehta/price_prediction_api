@@ -25,12 +25,12 @@ def price_predict():
 
     if request.method == 'POST':
 
-        if not isinstance(request.data, dict):
+        #print(type(request.get_json()))
+        if not isinstance(request.get_json(),
+                          dict) or request.get_json().get('data') is None:
             return 'Refer input format available at: http://immo-price-predictor.herokuapp.com/predict', 400
 
         json_data = request.get_json().get('data')
-        if not json_data:
-            return 'Refer input format available at: http://immo-price-predictor.herokuapp.com/predict', 400
 
         # Test if input provided is as requested. If not, send error message
         error_check = error_handler(json_data)
