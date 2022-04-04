@@ -7,13 +7,6 @@ def error_handler(json_data):
     Function to handle errors in user-provided input
     """
 
-    # Check if input is a valid JSON
-    # try:
-    #     input_data = json.loads(json_data)
-    # except ValueError:
-    #     return {"error": "The input data is not in a valid JSON format"}
-
-    # Check if input data is in the required format
     class Error(BaseModel):
         building_state: Literal["As new", "Just renovated", "Good",
                                 "To be done up", "To renovate",

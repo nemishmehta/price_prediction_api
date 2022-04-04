@@ -20,7 +20,6 @@ def price_predict():
         with open("preprocessing/template.json") as file:
             output_template = json.load(file)
 
-        # Beautify output using Flask templates
         return jsonify(output_template), 200
 
     if request.method == 'POST':
@@ -28,7 +27,11 @@ def price_predict():
         if not request.content_type == 'application/json' or not isinstance(
                 request.get_json(),
                 dict) or not request.get_json().get('data'):
-            return 'Refer input format available at: http://immo-price-predictor.herokuapp.com/predict', 400
+            return jsonify({
+                "errors":
+                "Refer input format available at: http://immo-price-predictor.herokuapp.com/predict",
+                "prediction": None
+            }), 400
 
         json_data = request.get_json().get('data')
 
