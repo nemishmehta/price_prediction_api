@@ -25,9 +25,9 @@ def price_predict():
 
     if request.method == 'POST':
 
-        #print(type(request.get_json()))
-        if not isinstance(request.get_json(),
-                          dict) or request.get_json().get('data') is None:
+        if not request.content_type == 'application/json' or not isinstance(
+                request.get_json(),
+                dict) or not request.get_json().get('data'):
             return 'Refer input format available at: http://immo-price-predictor.herokuapp.com/predict', 400
 
         json_data = request.get_json().get('data')
