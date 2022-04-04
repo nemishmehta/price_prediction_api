@@ -5,19 +5,152 @@ The goal of this repository is to provide web developers with price prediction o
 ### Base URL
 http://immo-price-predictor.herokuapp.com/
 
+#### Methods
+1. GET - No parameters required.
+
+##### Response
+```
+The server is alive.
+```
 ### Price Prediction
 http://immo-price-predictor.herokuapp.com/predict
 
 #### Methods
-1. GET - Returns a dictionary containing all required parameters and their formats to predict a property's price.
+1. GET - No parameters required. Returns a dictionary containing all required parameters and their formats to predict a property's price.
+
+##### Response
+```
+{
+  "data": {
+    "area": "[float]",
+    "building-state": [
+      "As new",
+      "Just renovated",
+      "Good",
+      "To be done up",
+      "To renovate",
+      "To restore"
+    ],
+    "city": [
+      "Aalst",
+      "Antwerpen",
+      "Arlon",
+      "Arrondissement Brussel-Hoofdstad",
+      "Ath",
+      "Bastogne",
+      "Brugge",
+      "Charleroi",
+      "Dendermonde",
+      "Diksmuide",
+      "Dinant",
+      "Eeklo",
+      "Gent",
+      "Halle-Vilvoorde",
+      "Hasselt",
+      "Huy",
+      "Ieper",
+      "Kortrijk",
+      "Leuven",
+      "Liège",
+      "Maaseik",
+      "Marche-en-Famenne",
+      "Mechelen",
+      "Mons",
+      "Mouscron",
+      "Namur",
+      "Neufchâteau",
+      "Nivelles",
+      "Oostende",
+      "Oudenaarde",
+      "Philippeville",
+      "Roeselare",
+      "Sint-Niklaas",
+      "Soignies",
+      "Thuin",
+      "Tielt",
+      "Tongeren",
+      "Tournai",
+      "Turnhout",
+      "Verviers",
+      "Veurne",
+      "Virton",
+      "Waremme"
+    ],
+    "equipped-kitchen": [
+      "USA uninstalled",
+      "Not installed",
+      "Installed",
+      "USA installed",
+      "Semi equipped",
+      "USA semi equipped",
+      "Hyper equipped",
+      "USA hyper equipped"
+    ],
+    "facades-number": "[int]",
+    "furnished": "[bool]",
+    "garden": "[bool]",
+    "land-area": "[float]",
+    "property-sub-type": [
+      "BUNGALOW",
+      "CASTLE",
+      "CHALET",
+      "COUNTRY_COTTAGE",
+      "DUPLEX",
+      "EXCEPTIONAL_PROPERTY",
+      "FARMHOUSE",
+      "FLAT_STUDIO",
+      "GROUND_FLOOR",
+      "KOT",
+      "LOFT",
+      "MANOR_HOUSE",
+      "MANSION",
+      "MIXED_USE_BUILDING",
+      "PENTHOUSE",
+      "SERVICE_FLAT",
+      "TOWN_HOUSE",
+      "TRIPLEX",
+      "VILLA"
+    ],
+    "property-type": [
+      "APARTMENT",
+      "HOUSE"
+    ],
+    "terrace": "[bool]"
+  }
+}
+```
 
 2. POST - Accepts a JSON request that should contains the required parameters and returns a JSON response containing the predicted price.
 
-### Success and Errors
-1. 200 - OK : Everything worked as expected.
+##### Response
+1. 200 - OK (Success)
 
-2. 400 - Bad Request : The request was unacceptable. Depending on the cause of the error, the response will either return the price prediction URL or identify the missing parameters or formats.
+```
+{
+    "error": null,
+    "prediction": [float]
+}
+```
 
+2. 400 - Bad Request (Error) : Depending on the cause of the error, the response will either return the price prediction URL or identify the missing parameters or formats.
+
+##### Response Type - 1
+```
+{
+    "errors": {
+        "parameter": "message"
+    },
+    "prediction": null
+}
+```
+
+##### Response Type - 2
+```
+{
+    "errors": "Refer input format available at: http://immo-price-predictor.herokuapp.com/predict",
+    "prediction": null
+}
+```
 
 ## Cloning Repository 
 
