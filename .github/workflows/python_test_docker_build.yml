@@ -37,4 +37,4 @@ jobs:
 
     steps:
     - name: Build docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . Dockerfile --tag my-image-name:$(date +%s)
