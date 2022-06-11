@@ -10,14 +10,15 @@ jobs:
   python_ci:
 
     runs-on: ubuntu-latest
-    strategy:
-    matrix:
-      python-version: [3.8]
-
+    
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-    - name: Setup python ${{ matrix.python-version }}
+    - name: Setup python environment
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
     - name: Install dependencies
       runs: |
