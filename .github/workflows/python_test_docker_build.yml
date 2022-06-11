@@ -33,7 +33,7 @@ jobs:
 
     - name: Run tests
       run: |
-        python test.py test
+        python test.py
 
 
   build:
